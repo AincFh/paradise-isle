@@ -314,4 +314,6 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     'craftedGoods', [3, 20, 100, 500], { coins: 240, xp: 45 }),
   ach('gourmet', '美食探险家', 'Island Gourmet', '累计品尝自制料理', 'Crafted meals eaten',
     'mealsEaten', [2, 15, 60, 200], { coins: 210, xp: 42, energy: 4 }),
+  ach('orders', '海岛供货商', 'Island Supplier', '累计交付食品订单', 'Island contracts delivered',
+    'ordersDelivered', [1, 10, 40, 160], {coins:300,xp:65,reputation:5}),
 ];
