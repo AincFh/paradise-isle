@@ -76,8 +76,8 @@ export class Hud {
     const bottomBar = h('div', { class: 'hud-bottom' },
       this.harvestBtn,
       this.homeBtn,
-      this.mkBtn('icon:seed_carrot', t('hud.bag'), () => cb.onOpen('inventory')),
-      this.mkBtn('fx:coin', t('hud.shop'), () => cb.onOpen('shop')),
+      this.mkBtn('icon:seed_carrot', t('hud.bag'), () => cb.onOpen('inventory'), 'inventory'),
+      this.mkBtn('fx:coin', t('hud.shop'), () => cb.onOpen('shop'), 'shop'),
       this.mkBtn('fx:ready', t('hud.quests'), () => cb.onOpen('quests')),
       this.mkBtn('fish:fish_goldkoi', t('hud.collections'), () => cb.onOpen('collections')),
       this.mkBtn('icon:item_shell', t('hud.wardrobe'), () => cb.onOpen('wardrobe')),
@@ -100,8 +100,8 @@ export class Hud {
     }
   }
 
-  private mkBtn(icon: string, label: string, onClick: () => void): HTMLButtonElement {
-    return h('button', { class: 'hud-btn', onclick: onClick },
+  private mkBtn(icon: string, label: string, onClick: () => void, panel?: string): HTMLButtonElement {
+    return h('button', { class: 'hud-btn', ...(panel ? {'data-panel':panel} : {}), onclick: onClick },
       spriteImg(icon, 'icon-md'), h('span', {}, label)) as HTMLButtonElement;
   }
 
