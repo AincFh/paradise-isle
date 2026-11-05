@@ -408,6 +408,24 @@ export interface DailyState {
   completed: string[];
 }
 
+export interface ShippingContract {
+  id: string;
+  itemId: string;
+  quantity: number;
+  delivered: number;
+  rewardCoins: number;
+  rewardXp: number;
+  acceptedAt: number;
+  expiresAt: number;
+}
+export interface ShippingState {
+  active: ShippingContract | null;
+  lastAcceptedDay: string;
+  completedDay: string;
+  completed: number;
+  expired: number;
+}
+
 export interface GameState {
   version: number;
   createdAt: number;
@@ -425,6 +443,8 @@ export interface GameState {
   nextBeastAt: number;
   nextWeedAt: number;
   inventory: Record<string, number>;
+  /** Optional in legacy saves; normalized on load and first freight action. */
+  shipping?: ShippingState;
   quests: {
     tutorialDone: string[];
     active: QuestProgress[];
