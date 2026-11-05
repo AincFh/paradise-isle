@@ -35,7 +35,7 @@ export function emptyStats(): Stats {
     petsAdopted: 0, petFeeds: 0, petPlays: 0,
     visits: 0, helps: 0, pranks: 0, hires: 0,
     coinsEarned: 0, coinsSpent: 0, itemsSold: 0,
-    craftedGoods: 0, mealsEaten: 0,
+    craftedGoods: 0, mealsEaten: 0, ordersDelivered: 0,
     expansions: 0, questsDone: 0,
     daysPlayed: 0, lastPlayDay: '',
   };
@@ -78,6 +78,7 @@ export function createNewGame(name: string, seed: number, now: number): GameStat
     nextBeastAt: 0,
     nextWeedAt: 0,
     inventory: { seed_carrot: 4 },
+    tradeBoard:undefined,
     quests: {
       tutorialDone: [],
       active: [],
