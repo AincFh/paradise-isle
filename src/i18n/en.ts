@@ -1,5 +1,10 @@
 /** English strings */
 export const EN: Record<string, string> = {
+    'market.today': "Today's market bid",
+  'market.notice': 'The island market changes daily. Hot items sell for more; quiet items sell for less. Quotes stay fixed for the day.',
+  'market.hot': 'HOT +25%',
+  'market.quiet': 'QUIET -15%',
+  'market.steady': 'Normal',
   'ui.confirm': 'OK',
   'ui.cancel': 'Cancel',
   'ui.close': 'Close',

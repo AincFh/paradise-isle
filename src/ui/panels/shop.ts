@@ -4,7 +4,7 @@
 import type { ActionResult, GameState } from '../../core/types';
 import { allAnimals, allBuildings, allClothing, allCrops, allPets } from '../../core/registry';
 import { buyAnimal } from '../../core/animals';
-import { buyClothing, buySeed, ROD_PRICES, upgradeRod } from '../../core/economy';
+import { buyClothing, buySeed, ROD_PRICES, upgradeRod, marketQuote } from '../../core/economy';
 import { adoptPet } from '../../core/pets';
 import { expandIsland } from '../../core/build';
 import { ISLAND_TIERS } from '../../core/balance';
@@ -86,7 +86,7 @@ function renderTab(body: HTMLElement, ctx: ShopContext): void {
         tl(c.name),
         [
           t('shop.grow', { t: fmtDuration(c.growMs) }),
-          `${t('ui.sell')}: ${c.sellPrice} × ${c.yieldMin}-${c.yieldMax} · ${t('ui.xp')}+${c.xp}`,
+          `${t('market.today')}: ${marketQuote(c.produceId,ctx.now()).unitPrice} × ${c.yieldMin}-${c.yieldMax} · ${t('ui.xp')}+${c.xp}`,
         ],
         c.seedPrice, c.unlockLevel, p.level, p.coins,
         t('ui.buy'),

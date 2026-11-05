@@ -67,13 +67,37 @@ export function upgradeRod(state: GameState): ActionResult {
   return { ok: true, events: [{ type: 'toast', target: 'msg.rodUpgraded' }] };
 }
 
+/** UTC day-based buying board. Same timestamp -> same quoted unit value.
+ * A deterministic fixed market prevents repeated reloads from rerolling prices.
+ * Market affects produce, animal goods and fish, never seed/building costs.
+ */
+export type MarketTrend = 'hot' | 'steady' | 'quiet';
+export interface MarketQuote { unitPrice: number; basePrice: number; trend: MarketTrend; multiplier: number; day: number }
+export function marketQuote(itemId: string, now: number): MarketQuote {
+  const def=itemDef(itemId);
+  const day=Math.floor(Math.max(0,Number.isFinite(now)?now:0)/86_400_000);
+  const category=def.category;
+  if(def.sell<=0||!['produce','animalGood','fish'].includes(category)){
+    return {unitPrice:def.sell,basePrice:def.sell,trend:'steady',multiplier:1,day};
+  }
+  let hash=(day^0x9e3779b9)>>>0;
+  for(let i=0;i<itemId.length;i++){hash^=itemId.charCodeAt(i);hash=Math.imul(hash,16777619)>>>0}
+  const bucket=hash%10;
+  const multiplier=bucket<2?.85:bucket>=8?1.25:1;
+  return {unitPrice:Math.max(1,Math.round(def.sell*multiplier)),basePrice:def.sell,
+    trend:multiplier>1?'hot':multiplier<1?'quiet':'steady',multiplier,day};
+}
+
 /** 出售物品 */
-export function sellItem(state: GameState, itemId: string, count: number): ActionResult {
+export function sellItem(state: GameState, itemId: string, count: number, now?: number): ActionResult {
+  if(!Number.isSafeInteger(count)||count<=0)return fail('msg.notEnough');
   const def = itemDef(itemId);
   if (def.sell <= 0) return fail('msg.cannotSell');
   if (itemCount(state, itemId) < count) return fail('msg.notEnough');
+  const quote=now===undefined?{unitPrice:def.sell}:marketQuote(itemId,now);
+  const total=quote.unitPrice*count;
+  if(!Number.isSafeInteger(total)||total<=0)return fail('msg.notEnough');
   removeItem(state, itemId, count);
-  const total = def.sell * count;
   const coinEvents = gainCoins(state, total);
   gainReputation(state, sellReputation(total));
   state.stats.itemsSold += count;
