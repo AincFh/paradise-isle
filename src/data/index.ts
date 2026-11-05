@@ -11,13 +11,14 @@ import { CROPS } from './crops.data';
 import { ANIMALS, ANIMAL_GOOD_PRICES } from './animals.data';
 import { BEASTS } from './beasts.data';
 import { FISH } from './fish.data';
+import { CRAFT_RECIPES } from './recipes.data';
 import { BUILDINGS, isWalkableCategory } from './buildings.data';
 import { CLOTHING } from './clothing.data';
 import { PETS } from './pets.data';
 import { NEIGHBORS } from './neighbors.data';
 import { ACHIEVEMENTS, DAILY_QUESTS, TUTORIAL_QUESTS } from './quests.data';
 
-export { CROPS, ANIMALS, BEASTS, FISH, BUILDINGS, CLOTHING, PETS, NEIGHBORS };
+export { CROPS, ANIMALS, BEASTS, FISH, BUILDINGS, CLOTHING, PETS, NEIGHBORS, CRAFT_RECIPES };
 export { TUTORIAL_QUESTS, DAILY_QUESTS, ACHIEVEMENTS };
 
 /** 手写材料/特殊物品 */
@@ -61,6 +62,9 @@ function buildItems(): ItemDef[] {
   }
   for (const f of FISH) {
     items.push({ id: f.id, name: f.name, category: 'fish', sell: f.sellPrice });
+  }
+  for(const recipe of CRAFT_RECIPES){
+    items.push({id:recipe.output,name:recipe.name,category:'crafted',sell:recipe.sell});
   }
   return items;
 }

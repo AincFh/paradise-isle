@@ -4,6 +4,7 @@
 import type { GameState } from '../../core/types';
 import { itemDef } from '../../core/registry';
 import { sellItem, marketQuote } from '../../core/economy';
+import { eatCrafted } from '../../core/crafting';
 import type { ActionResult } from '../../core/types';
 import { t, tl } from '../../i18n';
 import { h, clearChildren, spriteImg } from '../dom';
@@ -21,6 +22,7 @@ function renderBody(body: HTMLElement, state: GameState, dispatch: (r: ActionRes
   clearChildren(body);
   const marketNow=Date.now();
   body.append(h('div', { class: 'empty-note', style: 'margin-bottom:12px' }, t('market.notice')));
+  body.append(h('div', { class: 'empty-note', style: 'margin-bottom:10px' }, t('craft.inventoryHelp')));
   const entries = Object.entries(state.inventory).filter(([, n]) => n > 0);
   if (entries.length === 0) {
     body.append(h('div', { class: 'empty-note' }, t('inv.empty')));
@@ -52,6 +54,11 @@ function renderBody(body: HTMLElement, state: GameState, dispatch: (r: ActionRes
                 renderBody(body, state, dispatch);
               },
             }, t('ui.sell')),
+            def.category==='crafted'?h('button', {
+              class:'btn btn-sm btn-primary',
+              'data-eat':id,
+              onclick:()=>{dispatch(eatCrafted(state,id));renderBody(body,state,dispatch)},
+            },t('craft.eat')):null,
             count > 1
               ? h('button', {
                   class: 'btn btn-sm',

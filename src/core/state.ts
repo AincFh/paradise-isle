@@ -35,6 +35,7 @@ export function emptyStats(): Stats {
     petsAdopted: 0, petFeeds: 0, petPlays: 0,
     visits: 0, helps: 0, pranks: 0, hires: 0,
     coinsEarned: 0, coinsSpent: 0, itemsSold: 0,
+    craftedGoods: 0, mealsEaten: 0,
     expansions: 0, questsDone: 0,
     daysPlayed: 0, lastPlayDay: '',
   };

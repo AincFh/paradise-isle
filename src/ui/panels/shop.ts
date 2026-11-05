@@ -11,6 +11,7 @@ import { ISLAND_TIERS } from '../../core/balance';
 import { fmtDuration, t, tl } from '../../i18n';
 import { h, clearChildren, spriteImg } from '../dom';
 import { openPanel, promptDialog } from '../modal';
+import { renderWorkshop } from './workshop';
 
 export interface ShopContext {
   state: GameState;
@@ -35,6 +36,7 @@ export function openShop(ctx: ShopContext, tab?: string): void {
       { id: 'clothing', label: t('shop.clothing') },
       { id: 'pets', label: t('shop.pets') },
       { id: 'tools', label: t('shop.tools') },
+      { id: 'workshop', label: t('shop.workshop') },
     ],
     activeTab,
     onTab: (id) => openShop(ctx, id),
@@ -76,7 +78,9 @@ function renderTab(body: HTMLElement, ctx: ShopContext): void {
 
   const rerender = (): void => renderTab(body, ctx);
 
-  if (activeTab === 'seeds' || activeTab === 'trees') {
+  if (activeTab === 'workshop') {
+    renderWorkshop(body,state,ctx.now,dispatch);
+  } else if (activeTab === 'seeds' || activeTab === 'trees') {
     const crops = allCrops()
       .filter((c) => (activeTab === 'trees') === c.isTree)
       .sort((a, b) => a.unlockLevel - b.unlockLevel);

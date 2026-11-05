@@ -1,5 +1,24 @@
 /** 中文文案 */
 export const ZH: Record<string, string> = {
+  // ---- 工坊与烹饪
+  'shop.workshop': '海岛工坊',
+  'craft.title': '岛屿烹饪与加工',
+  'craft.intro': '使用自己收获的作物、牧场产出与鱼获制作料理。加工扣除库存和能量，获得经验。制成品可在背包出售，也可食用补充食物与体力。',
+  'craft.stats': '累计制作 {n} 份 · 品尝 {e} 份',
+  'craft.energy': '能量 −{n}',
+  'craft.sell': '出售 {n} 金币',
+  'craft.eatBonus': '食用：食物 +{food} · 能量 +{energy}',
+  'craft.make': '制作 {n} 份',
+  'craft.eat': '食用',
+  'craft.success': '已完成 {n} 份加工品',
+  'craft.eatSuccess': '已享用自制料理，体力与食物增加',
+  'craft.ready': '原料充足 · 可以加工',
+  'craft.shortage': '原料不足或能量不足',
+  'craft.inventoryHelp': '工坊制作的食物可以出售，也能点击「食用」补充食物和体力。',
+  'craft.invalidCount': '单次最多加工 5 份',
+  'craft.unknown': '不存在的工坊配方',
+  'craft.noIngredients': '原材料不足，无法加工',
+  'craft.notEdible': '此物品不能食用',
   // ---- 通用
     'market.today': '今日集市收购价',
   'market.notice': '每日集市行情会随真实日期变化，热销品收购价上涨，滞销品折价。价格在当天固定；收购金额以显示报价为准。',

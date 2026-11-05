@@ -12,6 +12,14 @@ It is a homage to QQ天堂岛, a 2011 Chinese web game. The rules are rebuilt fr
 
 [中文说明](README.zh-CN.md)
 
+## Island workshop: ten genuinely craftable dishes
+
+In the **Shop → Workshop** tab you can now turn real crop yields, animal goods, and fish into prepared meals and handcrafted food. There are 10 level-gated, bilingual recipes, from roasted carrots and potato soup to coconut pudding, fish platters, truffle rice and starlight tonic. They use existing inventory and energy. The player can craft 1 or 3 servings at once, with all required materials and resulting food/sale value shown before committing.
+
+Finished meals are actual items in the Bag: **sell** at the displayed fixed artisan price or **eat** to gain food and recover limited energy. No ingredients or currencies are conjured by the interface. The same domain events count toward two daily cooking tasks and two multi-tier culinary achievements, with normal slot save/load and import/export. All four icon families (plates, soup bowls, jam jars, bottles) are painted locally at runtime.
+
+Automated Vitest tests cover output registration, batch/level/energy validation, atomicity, real quest/stat accounting, eating, selling and old-save preservation. This is an expanded production loop within the browser sim, not a claim that a complete cooking animation or commercial-quality crafting game exists.
+
 ## Controls
 
 | Action | Mouse | Touch |
