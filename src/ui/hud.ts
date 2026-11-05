@@ -35,6 +35,7 @@ export class Hud {
   private homeBtn: HTMLButtonElement;
   private harvestBtn: HTMLButtonElement;
   private lastAvatarKey = '';
+  private isVisiting = false;
 
   constructor(cb: HudCallbacks) {
     this.avatarImg = spriteImg('fx:sparkle', 'hud-avatar');
@@ -109,6 +110,7 @@ export class Hud {
   }
 
   setVisiting(name: string | null, snapshotNote: boolean): void {
+    this.isVisiting = !!name;
     this.homeBtn.classList.toggle('hidden', !name);
     this.editBtn.classList.toggle('hidden', !!name);
     this.harvestBtn.classList.toggle('hidden', !!name);
@@ -137,7 +139,7 @@ export class Hud {
     this.repEl.textContent = String(p.reputation);
     this.energyEl.textContent = `${p.energy}/${maxEnergy(p.level)}`;
     const ripe = readyPlotCount(state,now);
-    this.harvestBtn.classList.toggle('hidden',ripe===0);
+    this.harvestBtn.classList.toggle('hidden',ripe===0 || this.isVisiting);
     this.harvestBtn.disabled = ripe===0 || p.energy<=0;
     this.harvestBtn.setAttribute('aria-label',t('hud.harvestAllCount',{n:ripe}));
     const label=this.harvestBtn.querySelector('span');
