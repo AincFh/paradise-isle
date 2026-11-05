@@ -12,6 +12,14 @@ It is a homage to QQ天堂岛, a 2011 Chinese web game. The rules are rebuilt fr
 
 [中文说明](README.zh-CN.md)
 
+## New: real harbor freight contracts
+
+**Shop → Freight Dock** adds a real logistics loop to the island's existing farming, ranching and fishing economy. The harbor generates three deterministic contracts each UTC day, drawn only from goods obtainable at your current level and fishing-rod tier. Every quote locks the daily market value, a transparent shipping premium and an 18-hour deadline once accepted. A player can accept **one order per UTC day**.
+
+Cargo must come from the actual backpack. Deliver it in one or more batches; coins, XP and reputation are paid **only on full completion**. Repeated clicks and invalid deliveries cannot claim an extra payout. Expired contracts are cleared by the ordinary world tick, including offline return, and cargo already delivered is not refunded. The economy therefore rewards planning actual harvests rather than tapping a cosmetic mission button.
+
+The bilingual harbor UI includes progress, remaining inventory, timers and rewards, with mobile layout. Old three-slot saves remain compatible, and a partially fulfilled order persists across reload, import/export and re-entry. Deterministic Vitest regression tests and real Selenium/Chrome acceptance cover quote rules, inventory deductions, expiry, reload, final payment and screenshots.
+
 ## Island workshop: ten genuinely craftable dishes
 
 In the **Shop → Workshop** tab you can now turn real crop yields, animal goods, and fish into prepared meals and handcrafted food. There are 10 level-gated, bilingual recipes, from roasted carrots and potato soup to coconut pudding, fish platters, truffle rice and starlight tonic. They use existing inventory and energy. The player can craft 1 or 3 servings at once, with all required materials and resulting food/sale value shown before committing.
