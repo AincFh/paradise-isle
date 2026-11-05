@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'vitest';
 import {makeGame,NOW} from './helpers';
 import {cropDef} from '../src/core/registry';
-import {cropView,plant,harvest,harvestReadyPlots,readyPlotCount} from '../src/core/crops';
+import {plant,harvest,harvestReadyPlots,readyPlotCount} from '../src/core/crops';
 import {ENERGY_COST} from '../src/core/balance';
 import {updateEnergy} from '../src/core/player';
 
