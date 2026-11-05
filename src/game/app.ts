@@ -279,7 +279,12 @@ export class App {
           state: this.state,
           now: () => this.now(),
           onLangChange: () => window.location.reload(),
-          onImported: () => window.location.reload(),
+          onImported: () => {
+            // The imported slot was already persisted by Settings.
+            // Disarm the stale session's beforeunload save before reloading.
+            this.destroy();
+            window.location.reload();
+          },
           onBackToTitle: () => {
             // Revert an unplaced purchase before persisting this session.
             this.cancelEdit();
