@@ -26,7 +26,17 @@ wait=WebDriverWait(browser,35)
 
 try:
     browser.get(BASE)
-    wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,".slot-card.empty .slot-main"))
+    try:
+        wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,".slot-card.empty .slot-main"))
+    except Exception:
+        print("Production boot failed:",browser.execute_script("""return {
+          url:location.href,title:document.title,ready:document.readyState,
+          root:document.querySelector('#title-screen')?.innerHTML.slice(0,250),
+          js:performance.getEntriesByType('resource').filter(x=>x.name.includes('/assets/'))
+            .map(x=>({url:x.name,size:x.transferSize}))}"""),flush=True)
+        print("Browser console:",browser.get_log('browser'),flush=True)
+        browser.save_screenshot(str(PROOF/"00-boot-failure.png"))
+        raise
     browser.find_element(By.CSS_SELECTOR,".slot-card.empty .slot-main").click()
     wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,".dialog-input"))
     browser.find_element(By.CSS_SELECTOR,".dialog-input").send_keys("Workshop QA")
