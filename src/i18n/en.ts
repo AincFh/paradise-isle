@@ -10,6 +10,8 @@ export const EN: Record<string, string> = {
   'craft.eatBonus': 'Eat: Food +{food} · Energy +{energy}',
   'craft.make': 'Craft {n}',
   'craft.eat': 'Eat',
+  'craft.success': 'Crafted {n} servings',
+  'craft.eatSuccess': 'Meal enjoyed: food and energy restored',
   'craft.ready': 'Ingredients ready',
   'craft.shortage': 'Need more ingredients or energy',
   'craft.inventoryHelp': 'Meals from the workshop can be sold or eaten for food and energy.',
