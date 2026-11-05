@@ -171,6 +171,14 @@ export class App {
         sfx('harvest');
         floatText(px, py - 60, `+${ev.amount}`, 'float-good');
         break;
+      case 'craft':
+        sfx('harvest');
+        toast(t('craft.success',{n:ev.amount??1}),'good');
+        break;
+      case 'eatCrafted':
+        sfx('eat');
+        toast(t('craft.eatSuccess'),'good');
+        break;
       case 'plant': sfx('plant'); break;
       case 'water': sfx('water'); break;
       case 'earnCoins':
