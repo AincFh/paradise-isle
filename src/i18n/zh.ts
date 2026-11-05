@@ -1,6 +1,11 @@
 /** 中文文案 */
 export const ZH: Record<string, string> = {
   // ---- 通用
+    'market.today': '今日集市收购价',
+  'market.notice': '每日集市行情会随真实日期变化，热销品收购价上涨，滞销品折价。价格在当天固定；收购金额以显示报价为准。',
+  'market.hot': '热销 +25%',
+  'market.quiet': '滞销 -15%',
+  'market.steady': '平价',
   'ui.confirm': '确定',
   'ui.cancel': '取消',
   'ui.close': '关闭',
