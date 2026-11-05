@@ -10,6 +10,8 @@ export const ZH: Record<string, string> = {
   'craft.eatBonus': '食用：食物 +{food} · 能量 +{energy}',
   'craft.make': '制作 {n} 份',
   'craft.eat': '食用',
+  'craft.success': '已完成 {n} 份加工品',
+  'craft.eatSuccess': '已享用自制料理，体力与食物增加',
   'craft.ready': '原料充足 · 可以加工',
   'craft.shortage': '原料不足或能量不足',
   'craft.inventoryHelp': '工坊制作的食物可以出售，也能点击「食用」补充食物和体力。',
