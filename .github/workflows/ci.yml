@@ -34,7 +34,7 @@ jobs:
         run: npx vite build
       - name: Install browser interaction QA
         run: python -m pip install selenium==4.37.0
-      - name: Accept real workshop gameplay in Chromium
+      - name: Accept workshop, session lifecycle and backup restore in Chromium
         run: |
           BASE_PATH=/paradise-isle/ npx vite preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/paradise-vite.log 2>&1 &
           for i in $(seq 1 40); do
@@ -42,12 +42,15 @@ jobs:
             sleep 1
           done
           python tests/browser_workshop.py
-      - name: Preserve workshop interaction screenshots
+          python tests/browser_lifecycle.py
+      - name: Preserve browser interaction and session-regression screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: paradise-workshop-chromium-proof
-          path: artifacts/workshop/
+          name: paradise-browser-chromium-proof
+          path: |
+            artifacts/workshop/
+            artifacts/session-lifecycle/
           if-no-files-found: ignore
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main'
