@@ -2,7 +2,9 @@
 
 An island life-sim for the browser: farm, raise animals, fish, fight off wild beasts, dress up and visit neighbours, with progress saved in your browser and no account.
 
-**Play it here: https://appleweiping.github.io/paradise-isle/** (desktop or phone)
+**Play this AincFh fork:** https://aincfh.github.io/paradise-isle/ (desktop or phone)
+
+> This is an independent MIT-licensed fork of [appleweiping/paradise-isle](https://github.com/appleweiping/paradise-isle). Original mechanics and artwork remain credited to the upstream creator. This fork adds a deterministic daily island market, with real buyback prices shown in the inventory and seed catalog.
 
 ![A new island: planting four carrots, skipping ahead the 90 seconds they take to grow, then harvesting](docs/paradise-isle.gif)
 
