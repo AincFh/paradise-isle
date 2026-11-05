@@ -21,7 +21,8 @@ export type ItemCategory =
   | 'fish'        // 鱼
   | 'material'    // 野兽掉落等材料
   | 'tool'        // 鱼竿等工具
-  | 'special';    // 礼物/宝箱等
+  | 'special'     // 礼物/宝箱等
+  | 'crafted';    // 岛屿工坊可出售/食用的加工商品
 
 export interface ItemDef {
   id: string;
@@ -30,6 +31,22 @@ export interface ItemDef {
   /** 出售单价（金币）；0 = 不可出售 */
   sell: number;
   desc?: L10n;
+}
+
+/** 工坊配方由数据表驱动，消费库存与体力并结算经验。 */
+export interface CraftRecipeDef {
+  id: string;
+  output: string;
+  name: L10n;
+  unlockLevel: number;
+  ingredients: Readonly<Record<string,number>>;
+  energy: number;
+  xp: number;
+  food: number;
+  recoverEnergy: number;
+  sell: number;
+  color: string;
+  style: 'plate' | 'bowl' | 'jar' | 'bottle';
 }
 
 // ---------------------------------------------------------------- 作物
@@ -241,6 +258,8 @@ export type QuestEventType =
   | 'hire'
   | 'clearWeed'
   | 'sell'
+  | 'craft'
+  | 'eatCrafted'
   | 'expand'
   | 'reachLevel'    // count=目标等级
   | 'earnCoins'     // 累计获得金币
@@ -354,6 +373,8 @@ export interface Stats {
   coinsEarned: number;
   coinsSpent: number;
   itemsSold: number;
+  craftedGoods: number;
+  mealsEaten: number;
   expansions: number;
   questsDone: number;
   daysPlayed: number;
