@@ -45,11 +45,9 @@ try:
     # Seed a harvest into the genuine save for a quick deterministic smoke.
     # All manufacturing, shop, sell, consume and save are executed by the UI.
     browser.execute_script("window.__PI__.state().inventory.produce_carrot=9")
-    browser.execute_script("""[...document.querySelectorAll('.hud-btn')]
-      .find(b=>b.textContent.trim()==='商店').click()""")
+    browser.find_element(By.CSS_SELECTOR,'[data-panel="shop"]').click()
     wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,".tab-btn"))
-    browser.execute_script("""[...document.querySelectorAll('.tab-btn')]
-      .find(b=>b.textContent.includes('海岛工坊')).click()""")
+    browser.find_element(By.CSS_SELECTOR,'.tab-btn[data-tab="workshop"]').click()
     wait.until(lambda d:len(d.find_elements(By.CSS_SELECTOR,".workshop-card"))==10)
     assert browser.execute_script("""return [...document.querySelectorAll('.workshop-card')]
       .filter(e=>e.querySelector('.shop-card-name')).length""")==10
@@ -70,8 +68,7 @@ try:
       '[data-craft-id="roasted-carrots"][data-craft-batch="1"]').disabled""")
     browser.save_screenshot(str(PROOF/"02-batch-crafting.png"))
     browser.find_element(By.CSS_SELECTOR,".panel-header .btn-close").click()
-    browser.execute_script("""[...document.querySelectorAll('.hud-btn')]
-      .find(b=>b.textContent.trim()==='背包').click()""")
+    browser.find_element(By.CSS_SELECTOR,'[data-panel="inventory"]').click()
     wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,'[data-eat="dish_roasted_carrots"]'))
     browser.save_screenshot(str(PROOF/"03-meal-in-inventory.png"))
     browser.execute_script("""document.querySelector(
@@ -85,10 +82,8 @@ try:
 
     # Sell another real meal from the same inventory page.
     browser.execute_script("""(() => {
-      const cell=[...document.querySelectorAll('.item-cell')]
-        .find(e=>e.querySelector('.item-name')?.textContent==='香烤胡萝卜');
-      const sell=[...cell.querySelectorAll('button')]
-        .find(b=>b.textContent.trim()==='出售');
+      const cell=document.querySelector('[data-eat="dish_roasted_carrots"]').closest('.item-cell');
+      const sell=[...cell.querySelectorAll('.item-actions button')].find(b=>!b.dataset.eat);
       sell.click();
     })()""")
     market=browser.execute_script("""return (() => {
@@ -116,10 +111,8 @@ try:
     browser.set_window_size(390,844)
     # Dismiss an optional offline-recovery dialog; no progress is lost.
     browser.execute_script("""document.querySelector('.dialog-box .btn-primary')?.click()""")
-    browser.execute_script("""[...document.querySelectorAll('.hud-btn')]
-      .find(b=>b.textContent.trim()==='商店').click()""")
-    browser.execute_script("""[...document.querySelectorAll('.tab-btn')]
-      .find(b=>b.textContent.includes('海岛工坊')).click()""")
+    browser.find_element(By.CSS_SELECTOR,'[data-panel="shop"]').click()
+    browser.find_element(By.CSS_SELECTOR,'.tab-btn[data-tab="workshop"]').click()
     width=browser.execute_script("""return (() => ({
       view:innerWidth,scroll:document.documentElement.scrollWidth,
       cards:document.querySelectorAll('.workshop-card').length,
