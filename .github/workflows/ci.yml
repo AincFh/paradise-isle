@@ -36,7 +36,7 @@ jobs:
         run: python -m pip install selenium==4.37.0
       - name: Accept real workshop gameplay in Chromium
         run: |
-          npx vite preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/paradise-vite.log 2>&1 &
+          BASE_PATH=/paradise-isle/ npx vite preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/paradise-vite.log 2>&1 &
           for i in $(seq 1 40); do
             if curl -sf http://127.0.0.1:4173/paradise-isle/ >/dev/null; then break; fi
             sleep 1
