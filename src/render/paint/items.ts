@@ -4,6 +4,7 @@
  */
 import type { FishDef, ItemDef } from '../../core/types';
 import { REG } from '../../core/registry';
+import {recipeForItem} from '../../data/recipes.data';
 import { circle, ellipse, hashColor, leafShape, PAL, rrect, shade, star, tri, type Ctx } from './common';
 
 const C = 16; // 图标中心
@@ -82,6 +83,44 @@ export function paintItemIcon(ctx: Ctx, itemId: string): void {
   const def: ItemDef | undefined = REG.items.get(itemId);
   const category = def?.category ?? 'special';
 
+  if (category === 'crafted') {
+    const r=recipeForItem(itemId);
+    const color=r?.color??'#e3ae7c',dark=shade(color,-.24),light=shade(color,.27);
+    const type=r?.style??'plate';
+    // Three dimensional highlights are painted procedurally, like all other
+    // island sprites; no image downloads, fonts or external assets are used.
+    ellipse(ctx,16,27,12,3.4,'rgba(70,63,48,.15)');
+    if(type==='plate'){
+      ellipse(ctx,16,18,13.5,10,'#f8f1df','#bba98f');
+      ellipse(ctx,16,18,10,7,'#eadfc9','#d5c1a6');
+      ellipse(ctx,16,17,7,5,color,dark);
+      circle(ctx,13.8,15,2.1,light);
+      circle(ctx,19.4,19,2.3,dark);
+      leafShape(ctx,21,12,6,2.5,-.8,'#76a36a');
+    }else if(type==='bowl'){
+      ellipse(ctx,16,14,12.5,6,'#f6f4e8','#c7d0c9');
+      ellipse(ctx,16,14,10,4.3,color,dark);
+      rrect(ctx,7,14,18,11,5,'#f3e6d2','#bca98f');
+      ellipse(ctx,16,14,10,4,color,dark);
+      circle(ctx,13,13.5,1.3,light);
+      circle(ctx,19,15,1.3,'#7fa268');
+    }else if(type==='jar'){
+      rrect(ctx,10,8,12,19,3,'#e4e6cf','#a8aa95');
+      rrect(ctx,11,11,10,13,2,color,dark);
+      rrect(ctx,9,6,14,5,1.5,'#d5af78','#9f8054');
+      rrect(ctx,11,16,10,5,1,'#fff5d6');
+      circle(ctx,16,18.5,2.0,color,dark);
+      ellipse(ctx,13,12,1.5,5,'rgba(255,255,255,.34)');
+    }else{
+      rrect(ctx,11,9,10,19,3,'#dbe7de','#a4b9ad');
+      rrect(ctx,12,15,8,11,2,color,dark);
+      rrect(ctx,13,5,6,6,2,'#cad4bd','#9aaf9b');
+      rrect(ctx,14,3,4,4,1,'#d4b38d','#9a7954');
+      ellipse(ctx,13,15.5,1,4,'rgba(255,255,255,.4)');
+      star(ctx,17,20,3,light);
+    }
+    return;
+  }
   if (category === 'seed') {
     // 种子袋
     const cropColor = FRUIT_COLOR[itemId.replace('seed_', 'produce_')] || hashColor(itemId);
