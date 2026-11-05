@@ -66,6 +66,7 @@ export class App {
   private lastSave = 0;
   private running = true;
   private raf = 0;
+  private readonly listeners = new AbortController();
   private onBackToTitle: () => void;
 
   constructor(canvas: HTMLCanvasElement, state: GameState, slot: number, onBackToTitle: () => void) {
@@ -92,17 +93,18 @@ export class App {
 
     this.bindInput(canvas);
     this.renderer.centerOnIsland(sceneFromState(state));
-    window.addEventListener('resize', () => this.renderer.resize());
-    window.addEventListener('beforeunload', () => this.save());
+    const signal = this.listeners.signal;
+    window.addEventListener('resize', () => this.renderer.resize(), { signal });
+    window.addEventListener('beforeunload', () => this.save(), { signal });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) this.save();
-    });
+    }, { signal });
     // 首次交互解锁音频
     const unlock = (): void => {
       startBgm();
       window.removeEventListener('pointerdown', unlock);
     };
-    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('pointerdown', unlock, { signal });
 
     this.lastSave = Date.now();
     // 调试/自动化测试钩子（不影响正常游玩）
@@ -120,8 +122,16 @@ export class App {
   }
 
   destroy(): void {
+    if (!this.running) return;
     this.running = false;
     cancelAnimationFrame(this.raf);
+    this.walkTarget = null;
+    this.listeners.abort();
+    this.hud.destroy();
+    // A previous game instance must never remain addressable by QA tooling.
+    const exposed = window as unknown as Record<string, unknown>;
+    const hook = exposed.__PI__ as { app?: unknown } | undefined;
+    if (hook?.app === this) delete exposed.__PI__;
   }
 
   now(): number {
@@ -269,8 +279,16 @@ export class App {
           state: this.state,
           now: () => this.now(),
           onLangChange: () => window.location.reload(),
-          onImported: () => window.location.reload(),
+          onImported: () => {
+            // The imported slot was already persisted by Settings.
+            // Disarm the stale session's beforeunload save before reloading.
+            this.destroy();
+            window.location.reload();
+          },
           onBackToTitle: () => {
+            // Revert an unplaced purchase before persisting this session.
+            this.cancelEdit();
+            this.save();
             this.destroy();
             this.onBackToTitle();
           },
@@ -349,6 +367,7 @@ export class App {
   // ---------------------------------------------------------------- 输入
 
   private bindInput(canvas: HTMLCanvasElement): void {
+    const signal = this.listeners.signal;
     let downX = 0;
     let downY = 0;
     let dragging = false;
@@ -373,11 +392,11 @@ export class App {
       downY = ev.clientY;
       dragging = true;
       panning = false;
-    });
+    }, { signal });
     const dropPointer = (ev: PointerEvent): void => {
       pointers.delete(ev.pointerId);
     };
-    window.addEventListener('pointercancel', dropPointer);
+    window.addEventListener('pointercancel', dropPointer, { signal });
     canvas.addEventListener('pointermove', (ev) => {
       const cam = this.renderer.camera;
       if (pointers.has(ev.pointerId)) pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
@@ -399,7 +418,7 @@ export class App {
       }
       const tile = cam.tileAt(ev.clientX, ev.clientY);
       this.hover = tile;
-    });
+    }, { signal });
     canvas.addEventListener('pointerup', (ev) => {
       dropPointer(ev);
       dragging = false;
@@ -414,23 +433,23 @@ export class App {
         return;
       }
       this.onClick(ev.clientX, ev.clientY);
-    });
+    }, { signal });
     canvas.addEventListener('pointerleave', (ev) => {
       if (ev.pointerType === 'mouse') dropPointer(ev);
       dragging = false;
       this.hover = null;
-    });
+    }, { signal });
     canvas.addEventListener('wheel', (ev) => {
       ev.preventDefault();
       this.renderer.camera.zoomAt(ev.deltaY < 0 ? 1.12 : 0.9, ev.clientX, ev.clientY);
-    }, { passive: false });
+    }, { passive: false, signal });
     window.addEventListener('keydown', (ev) => {
       if (ev.key === 'Escape') {
         if (isActionMenuOpen()) hideActionMenu();
         else if (isPanelOpen()) closePanel();
         else if (this.edit.placing || this.edit.movingUid) this.cancelEdit();
       }
-    });
+    }, { signal });
   }
 
   // ---------------------------------------------------------------- 点击处理
