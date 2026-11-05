@@ -130,8 +130,8 @@ export function freightStatus(state:GameState,now:number):FreightStatus{
 /** One accepted order per real UTC day, even after completion/expiration. */
 export function acceptFreight(state:GameState,id:string,now:number):ActionResult{
   if(!validNow(now))return fail('freight.invalid');
-  const board=ensureShippingState(state),day=shippingDayKey(now);
   expireFreight(state,now);
+  const board=ensureShippingState(state),day=shippingDayKey(now);
   if(board.active)return fail('freight.busy');
   if(board.lastAcceptedDay===day)return fail('freight.dailyLimit');
   const offer=freightOffers(state,now).find(x=>x.id===id);
@@ -144,7 +144,7 @@ export function acceptFreight(state:GameState,id:string,now:number):ActionResult
 }
 /** Only already-deposited cargo is lost at expiry; never award incomplete work. */
 export function expireFreight(state:GameState,now:number):boolean{
-  if(!validNow(now))return false;
+  if(!validNow(now)||!state.shipping?.active)return false;
   const board=ensureShippingState(state);
   if(!board.active||now<board.active.expiresAt)return false;
   board.active=null;board.expired++;
