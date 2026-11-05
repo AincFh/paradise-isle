@@ -57,9 +57,9 @@ def open_settings():
     driver.find_element(By.CSS_SELECTOR,'.hud-bottom button:last-child').click()
     wait.until(lambda d:d.find_element(By.CSS_SELECTOR,'.modal-overlay').is_displayed())
 
-def click_settings_button(fragment):
+def click_settings_button(*fragments):
     buttons=driver.find_elements(By.CSS_SELECTOR,'.modal-panel .set-row button')
-    matches=[b for b in buttons if fragment in b.text]
+    matches=[b for b in buttons if any(fragment in b.text for fragment in fragments)]
     assert len(matches)==1,[(b.text) for b in buttons]
     matches[0].click()
 
@@ -81,7 +81,7 @@ try:
     driver.execute_script('window.__PI__.state().player.coins=777')
     for cycle in range(1,6):
         open_settings()
-        click_settings_button('回到标题')
+        click_settings_button('回到标题','Back to title')
         wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,'.dialog-overlay .btn-primary'))
         driver.find_element(By.CSS_SELECTOR,'.dialog-overlay .btn-primary').click()
         wait.until(lambda d:d.execute_script(
@@ -112,7 +112,7 @@ try:
       return btoa(out);
     })()""")
     open_settings()
-    click_settings_button('导入')
+    click_settings_button('导入','Import save')
     wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,'.dialog-input'))
     driver.execute_script("""const field=document.querySelector('.dialog-input');
       field.value=arguments[0];field.dispatchEvent(new Event('input',{bubbles:true}));""",backup)
