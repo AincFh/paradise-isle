@@ -3,6 +3,7 @@ import {makeGame,NOW} from './helpers';
 import {cropDef} from '../src/core/registry';
 import {cropView,plant,harvest,harvestReadyPlots,readyPlotCount} from '../src/core/crops';
 import {ENERGY_COST} from '../src/core/balance';
+import {updateEnergy} from '../src/core/player';
 
 function seeded(){
  const state=makeGame();
@@ -14,6 +15,7 @@ describe('批量收获 / batch-harvesting economy',()=>{
  it('harvests exactly the eligible plots through existing settlement rules',()=>{
   const {state,when}=seeded();
   expect(readyPlotCount(state,when)).toBe(4);
+  updateEnergy(state,when);
   const energy=state.player.energy,food=state.player.food,xp=state.player.xp;
   const result=harvestReadyPlots(state,when);
   expect(result.ok).toBe(true);
