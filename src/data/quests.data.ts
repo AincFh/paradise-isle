@@ -244,6 +244,20 @@ export const DAILY_QUESTS: QuestDef[] = [
     reward: { coins: 240, xp: 48 },
     minLevel: 6,
   },
+  {
+    id: 'dq_workshop3', daily: true,
+    name: { zh: '岛屿小厨师', en: 'Island Kitchen' },
+    desc: { zh: '在工坊加工 3 份食品。', en: 'Craft 3 servings in the workshop.' },
+    steps: [{ type: 'craft', count: 3 }],
+    reward: { coins: 95, xp: 20, energy: 5 },
+  },
+  {
+    id: 'dq_tasting2', daily: true,
+    name: { zh: '海岛味觉', en: 'Taste of the Island' },
+    desc: { zh: '食用 2 份自制料理。', en: 'Eat 2 meals prepared at your workshop.' },
+    steps: [{ type: 'eatCrafted', count: 2 }],
+    reward: { coins: 85, xp: 20, food: 7 },
+  },
 ];
 
 // ---------------------------------------------------------------- 成就
@@ -296,4 +310,8 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     'hires', [2, 10, 40], { coins: 350, xp: 70 }),
   ach('daysplayed', '常驻岛民', 'True Islander', '累计游玩天数', 'Days played',
     'daysPlayed', [2, 7, 30, 100], { coins: 600, xp: 120, energy: 20 }),
+  ach('chef', '海岛主厨', 'Island Chef', '累计加工食品数量', 'Total crafted servings',
+    'craftedGoods', [3, 20, 100, 500], { coins: 240, xp: 45 }),
+  ach('gourmet', '美食探险家', 'Island Gourmet', '累计品尝自制料理', 'Crafted meals eaten',
+    'mealsEaten', [2, 15, 60, 200], { coins: 210, xp: 42, energy: 4 }),
 ];
