@@ -260,6 +260,7 @@ export type QuestEventType =
   | 'sell'
   | 'craft'
   | 'eatCrafted'
+  | 'fulfillOrder'
   | 'expand'
   | 'reachLevel'    // count=目标等级
   | 'earnCoins'     // 累计获得金币
@@ -375,6 +376,7 @@ export interface Stats {
   itemsSold: number;
   craftedGoods: number;
   mealsEaten: number;
+  ordersDelivered: number;
   expansions: number;
   questsDone: number;
   daysPlayed: number;
@@ -425,6 +427,9 @@ export interface GameState {
   nextBeastAt: number;
   nextWeedAt: number;
   inventory: Record<string, number>;
+  /** One-day rotating market requests; generated from seed/day/level, never
+   * persisted as editable coin/reward quotes. */
+  tradeBoard?: {day:string;level:number;completed:string[]};
   quests: {
     tutorialDone: string[];
     active: QuestProgress[];
