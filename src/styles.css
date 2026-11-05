@@ -464,3 +464,22 @@ img { image-rendering: auto; }
 
 /* Integrated food workshop with readable stock/energy and non-overlapping actions. */
 .workshop-status{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 16px;border:1px solid #c9dfce;border-radius:12px;margin-bottom:14px;background:#f3faed}.workshop-status strong{font-size:14px;color:#527352}.workshop-status span{font-size:12px;color:#647a67}.workshop-card{align-items:center;gap:12px}.workshop-ingredients{display:flex;gap:5px;flex-wrap:wrap;margin:7px 0}.workshop-ingredients span{font-size:11px;line-height:1.6;border:1px solid #d8dfd2;padding:2px 6px;border-radius:6px;background:#f8faef}.ingredient-ok{color:#527c52}.ingredient-missing{color:#a66454!important;border-color:#dfc9c1!important;background:#fcefe8!important}.workshop-meta{display:flex;gap:10px;flex-wrap:wrap;color:#857457;font-size:11px}.workshop-actions{display:flex;flex-direction:column;gap:6px;min-width:94px}.workshop-actions button{white-space:nowrap}.workshop-card.locked .workshop-actions{opacity:.55}@media(max-width:500px){.workshop-card{flex-wrap:wrap}.workshop-card .shop-card-info{flex-basis:calc(100% - 70px)}.workshop-actions{width:100%;flex-direction:row}.workshop-actions button{flex:1}}
+
+
+/* Harbor freight: readable information hierarchy on desktop and phones. */
+.freight-overview{padding:18px 20px;margin-bottom:15px;border-radius:16px;border:1px solid #e5cba1;background:linear-gradient(135deg,#fdf4df,#e6f4e9 85%);color:#385449}
+.freight-kicker{font-size:10px;letter-spacing:.14em;font-weight:800;color:#a1784a;text-transform:uppercase}
+.freight-overview h3{font-size:20px;margin:5px 0 7px;color:#33584e}
+.freight-overview p{line-height:1.7;margin:0;font-size:13px;max-width:680px;color:#567167}
+.freight-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.freight-stats span{background:#ffffffb0;padding:5px 9px;font-size:11px;border:1px solid #cddac8;border-radius:7px}
+.freight-list{display:grid;gap:10px}
+.freight-contract{border:1px solid #d9d9c4;border-radius:12px;transition:box-shadow .16s}
+.freight-contract:focus-within{outline:2px solid #7d9c78;outline-offset:2px}
+.freight-contract .shop-card-buy{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.freight-contract .shop-card-buy strong{white-space:normal;font-size:12px;color:#557850;text-align:right}
+.freight-active{border-color:#9bbf9c;background:linear-gradient(110deg,#f7faee,#e9f7e9)}
+.freight-progress{height:7px;border-radius:12px;background:#d6ddcf;overflow:hidden;margin:9px 0;width:min(290px,95%)}
+.freight-progress-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,#8bba83,#438d76)}
+.freight-done{border:1px solid #bfd7ba;background:#f1f9e8;padding:16px}
+@media(max-width:650px){.freight-overview{padding:13px}.freight-contract{flex-wrap:wrap;gap:9px}.freight-contract .shop-card-buy{width:100%;align-items:stretch}.freight-contract .shop-card-buy strong{text-align:left}.freight-contract .shop-card-buy button{width:100%}}
