@@ -81,9 +81,7 @@ try:
     driver.execute_script('window.__PI__.state().player.coins=777')
     for cycle in range(1,6):
         open_settings()
-        click_settings_button('返回标题' if driver.find_elements(By.CSS_SELECTOR,'.title-lang') else '回到标题')
-        # The settings UI is localized; if it changes, the actual last set-row
-        # still owns the confirm action and must remain one click away.
+        click_settings_button('回到标题')
         wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,'.dialog-overlay .btn-primary'))
         driver.find_element(By.CSS_SELECTOR,'.dialog-overlay .btn-primary').click()
         wait.until(lambda d:d.execute_script(
