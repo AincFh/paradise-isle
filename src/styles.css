@@ -456,3 +456,8 @@ img { image-rendering: auto; }
   .title-box { padding: 40px 20px 26px; }
   .title-logo { font-size: 34px; letter-spacing: 3px; }
 }
+
+/* Contextual bulk-harvest action: visible only with ripe home-island plots. */
+.hud-harvest-all{background:linear-gradient(180deg,#f4ebbe,#bfe1ae);border-color:#89bc74!important;color:#28543a!important}
+.hud-harvest-all span{font-weight:850}
+.hud-harvest-all:disabled{opacity:.55;cursor:not-allowed}
