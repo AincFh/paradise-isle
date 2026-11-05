@@ -18,7 +18,7 @@ In the **Shop → Workshop** tab you can now turn real crop yields, animal goods
 
 Finished meals are actual items in the Bag: **sell** at the displayed fixed artisan price or **eat** to gain food and recover limited energy. No ingredients or currencies are conjured by the interface. The same domain events count toward two daily cooking tasks and two multi-tier culinary achievements, with normal slot save/load and import/export. All four icon families (plates, soup bowls, jam jars, bottles) are painted locally at runtime.
 
-Automated Vitest tests cover output registration, batch/level/energy validation, atomicity, real quest/stat accounting, eating, selling and old-save preservation. This is an expanded production loop within the browser sim, not a claim that a complete cooking animation or commercial-quality crafting game exists.
+Automated Vitest tests and a real Selenium/Chrome production-build acceptance (craft → eat → sell → reload → mobile layout, with screenshots) cover output registration, batch/level/energy validation, atomicity, real quest/stat accounting, eating, selling and old-save preservation. This is an expanded production loop within the browser sim, not a claim that a complete cooking animation or commercial-quality crafting game exists.
 
 ## Controls
 
