@@ -37,6 +37,8 @@ const STAT_KEY: Partial<Record<GameEvent['type'], string>> = {
   helpNeighbor: 'helps',
   prank: 'pranks',
   hire: 'hires',
+  craft: 'craftedGoods',
+  eatCrafted: 'mealsEaten',
   expand: 'expansions',
 };
 
