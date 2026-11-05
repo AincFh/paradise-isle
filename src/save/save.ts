@@ -57,6 +57,14 @@ export function deserialize(json: string, now: number): GameState {
     throw new Error('not a valid save');
   }
   const state = migrate(raw);
+  // In-place optional-field normalization keeps old v3 saves playable without
+  // invalidating imports made before market contracts existed.
+  state.stats={...emptyStats(),...state.stats};
+  const board=state.tradeBoard;
+  state.tradeBoard=board&&typeof board.day==='string'&&/^\\d{4}-\\d{2}-\\d{2}$/.test(board.day)&&
+    Number.isSafeInteger(board.level)&&board.level>=1&&board.level<=100&&Array.isArray(board.completed)
+      ?{day:board.day,level:board.level,completed:board.completed.filter(x=>typeof x==='string'&&x.length<=120).slice(0,10)}
+      :undefined;
   // 邻居为空（老档/异常）时重建
   initNeighbors(state, now);
   return state;
