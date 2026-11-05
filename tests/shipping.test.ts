@@ -32,8 +32,8 @@ describe('Island harbor daily freight contracts',()=>{
  it('only offers goods a new player could produce or catch with current equipment',()=>{
   const s=makeGame();
   for(const q of freightOffers(s,NOW)){
-   expect(['produce_carrot','produce_potato']).toContain(q.itemId.slice(0,8)==='produce_'?q.itemId:q.itemId.includes('fish_')?'produce_carrot':'produce_potato');
    expect(q.itemId.startsWith('produce_')||q.itemId.startsWith('fish_')).toBe(true);
+   if(q.itemId.startsWith('produce_'))expect(['produce_carrot','produce_potato']).toContain(q.itemId);
    expect(q.itemId).not.toMatch(/goldkoi|kraken|produce_starfruit|good_peacock/);
   }
   s.player.level=30;s.player.rodTier=3;
