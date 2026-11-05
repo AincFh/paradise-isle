@@ -52,6 +52,7 @@ export function openPanel(spec: PanelSpec): void {
     for (const tab of spec.tabs) {
       const btn = h('button', {
         class: `tab-btn ${tab.id === spec.activeTab ? 'active' : ''}`,
+        'data-tab':tab.id,
         onclick: () => spec.onTab?.(tab.id),
       }, tab.label);
       tabBar.append(btn);
