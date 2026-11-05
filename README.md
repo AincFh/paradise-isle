@@ -63,3 +63,7 @@ Inspired by QQ天堂岛 (Tencent, 2011). This project is not affiliated with or 
 ## License
 
 [MIT](LICENSE)
+
+## Batch harvesting on your own island
+
+When crops or fruit trees are ready, the bottom action bar now offers **Harvest N**. It processes at most 20 ready plots per click using exactly the same single-plot harvest transaction and costs as harvesting manually. An insufficient energy balance stops the operation safely and preserves all already harvested items; the remaining ripe plots can be harvested later. Withered or growing crops do not qualify, fruit trees respect regrowth timers, and every harvested plot still emits quest and achievement events. The contextual action is hidden while visiting neighbours. UI labels support English and Chinese, and the behavior has dedicated regression tests.
