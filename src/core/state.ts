@@ -10,6 +10,7 @@ import { tickBeastMischief, tickBeasts } from './beasts';
 import { tickWeeds } from './weeds';
 import { tickPetGifts } from './pets';
 import { updateEnergy } from './player';
+import {emptyShippingState,expireFreight} from './shipping';
 
 export const SAVE_VERSION = 3;
 
@@ -78,6 +79,7 @@ export function createNewGame(name: string, seed: number, now: number): GameStat
     nextBeastAt: 0,
     nextWeedAt: 0,
     inventory: { seed_carrot: 4 },
+    shipping:emptyShippingState(),
     quests: {
       tutorialDone: [],
       active: [],
@@ -117,6 +119,7 @@ export interface TickSummary {
 /** 世界推进：能量、野兽、杂草、宠物技能、每日刷新（每帧或加载时调用） */
 export function tickWorld(state: GameState, now: number): TickSummary {
   updateEnergy(state, now);
+  expireFreight(state,now);
   refreshDaily(state, now);
   const beastsArrived = tickBeasts(state, now);
   const cropsTrampled = tickBeastMischief(state, now);
