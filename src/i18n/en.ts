@@ -50,6 +50,9 @@ export const EN: Record<string, string> = {
   'hud.edit': 'Decorate',
   'hud.settings': 'Settings',
   'hud.home': 'Home',
+  'hud.harvestAll': 'Harvest All',
+  'hud.harvestAllCount': 'Harvest {n}',
+  'hud.harvestSummary': 'Harvested {n} plots · {remaining} remaining',
   'hud.energyFull': 'Energy full',
   'hud.nextEnergy': '+1 in {t}',
 

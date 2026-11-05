@@ -6,7 +6,7 @@ import type { ActionResult, GameEvent, GameState, NeighborState } from '../core/
 import { tickWorld } from '../core/state';
 import { updateEnergy } from '../core/player';
 import { buildTerrain, isFishable, terrainAt } from '../core/island';
-import { cropView, harvest, plant, plotByUid, removePlot, till, water } from '../core/crops';
+import { cropView, harvest, harvestReadyPlots, plant, plotByUid, removePlot, till, water } from '../core/crops';
 import { animalPhase, collectAnimal, feedAnimal } from '../core/animals';
 import { clearWeed } from '../core/weeds';
 import { feedPet, petHungry, playPet } from '../core/pets';
@@ -87,6 +87,7 @@ export class App {
       onOpen: (panel) => this.openPanel(panel),
       onToggleEdit: () => this.toggleEdit(),
       onGoHome: () => this.goHome(),
+      onHarvestReady: () => this.harvestAllReady(),
     });
 
     this.bindInput(canvas);
@@ -131,6 +132,16 @@ export class App {
     this.state.player.px = this.playerActor.x;
     this.state.player.py = this.playerActor.y;
     saveToSlot(this.state, this.slot, this.now());
+  }
+
+  private harvestAllReady(): void {
+    if(this.mode.kind !== 'home' || this.edit.active || isPanelOpen())return;
+    const result=harvestReadyPlots(this.state,this.now(),20);
+    this.dispatch(result);
+    if(result.ok && result.harvested){
+      toast(t('hud.harvestSummary',{n:result.harvested,remaining:result.remaining??0}),'good');
+      this.save();
+    }
   }
 
   // ---------------------------------------------------------------- 事件分发

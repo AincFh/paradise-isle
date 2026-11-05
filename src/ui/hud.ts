@@ -4,6 +4,7 @@
 import type { GameState } from '../core/types';
 import { maxEnergy, xpForNextLevel } from '../core/balance';
 import { energyEta } from '../core/player';
+import { readyPlotCount } from '../core/crops';
 import { questDef } from '../core/registry';
 import { questComplete } from '../core/quests';
 import { charKey, spriteDataUrl } from '../render/sprites';
@@ -14,6 +15,7 @@ export interface HudCallbacks {
   onOpen: (panel: 'inventory' | 'shop' | 'quests' | 'collections' | 'wardrobe' | 'neighbors' | 'settings') => void;
   onToggleEdit: () => void;
   onGoHome: () => void;
+  onHarvestReady: () => void;
 }
 
 export class Hud {
@@ -31,7 +33,9 @@ export class Hud {
   private visitBanner: HTMLElement;
   private editBtn: HTMLButtonElement;
   private homeBtn: HTMLButtonElement;
+  private harvestBtn: HTMLButtonElement;
   private lastAvatarKey = '';
+  private isVisiting = false;
 
   constructor(cb: HudCallbacks) {
     this.avatarImg = spriteImg('fx:sparkle', 'hud-avatar');
@@ -67,7 +71,10 @@ export class Hud {
     this.homeBtn = h('button', { class: 'hud-btn hidden', onclick: () => cb.onGoHome() },
       spriteImg('fx:heart', 'icon-md'), h('span', {}, t('hud.home'))) as HTMLButtonElement;
 
+    this.harvestBtn = this.mkBtn('fx:ready', t('hud.harvestAll'), () => cb.onHarvestReady());
+    this.harvestBtn.classList.add('hud-harvest-all', 'hidden');
     const bottomBar = h('div', { class: 'hud-bottom' },
+      this.harvestBtn,
       this.homeBtn,
       this.mkBtn('icon:seed_carrot', t('hud.bag'), () => cb.onOpen('inventory')),
       this.mkBtn('fx:coin', t('hud.shop'), () => cb.onOpen('shop')),
@@ -103,8 +110,10 @@ export class Hud {
   }
 
   setVisiting(name: string | null, snapshotNote: boolean): void {
+    this.isVisiting = !!name;
     this.homeBtn.classList.toggle('hidden', !name);
     this.editBtn.classList.toggle('hidden', !!name);
+    this.harvestBtn.classList.toggle('hidden', !!name);
     if (name) {
       this.visitBanner.textContent = snapshotNote
         ? t('nb.snapshotNote', { name })
@@ -129,6 +138,12 @@ export class Hud {
     this.foodEl.textContent = String(p.food);
     this.repEl.textContent = String(p.reputation);
     this.energyEl.textContent = `${p.energy}/${maxEnergy(p.level)}`;
+    const ripe = readyPlotCount(state,now);
+    this.harvestBtn.classList.toggle('hidden',ripe===0 || this.isVisiting);
+    this.harvestBtn.disabled = ripe===0 || p.energy<=0;
+    this.harvestBtn.setAttribute('aria-label',t('hud.harvestAllCount',{n:ripe}));
+    const label=this.harvestBtn.querySelector('span');
+    if(label)label.textContent=t('hud.harvestAllCount',{n:ripe});
     const eta = energyEta(state, now);
     this.energyEtaEl.textContent = eta > 0 ? t('hud.nextEnergy', { t: fmtDuration(eta) }) : '';
 

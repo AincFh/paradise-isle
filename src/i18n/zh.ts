@@ -53,6 +53,9 @@ export const ZH: Record<string, string> = {
   'hud.edit': '布置',
   'hud.settings': '设置',
   'hud.home': '回家',
+  'hud.harvestAll': '批量收获',
+  'hud.harvestAllCount': '收获 {n} 块',
+  'hud.harvestSummary': '已收获 {n} 块农田 · 剩余 {remaining} 块',
   'hud.energyFull': '能量已满',
   'hud.nextEnergy': '{t}后+1',
 

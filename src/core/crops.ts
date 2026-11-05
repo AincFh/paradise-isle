@@ -155,3 +155,31 @@ export function readyPlotCount(state: GameState, now: number): number {
   }
   return n;
 }
+
+/** Harvest a bounded set of ready home-island plots using ONLY the ordinary
+ * single-plot harvest transaction, so energy, inventory, XP, tree regrowth,
+ * quest events and all RNG yields remain identical to manual harvesting.
+ * Previously completed plots are never rolled back when energy runs out.
+ */
+export function harvestReadyPlots(
+  state: GameState,
+  now: number,
+  limit = 20,
+): ActionResult & { harvested?: number; remaining?: number } {
+  if (!Number.isInteger(limit) || limit < 1 || limit > 50) return fail('msg.notReady');
+  const ids = state.plots.filter(p => p.crop && cropView(p.crop, now).stage === 'ready')
+    .slice(0, limit).map(p => p.uid);
+  if (!ids.length) return fail('msg.notReady');
+  const events: NonNullable<ActionResult['events']> = [];
+  let harvested = 0;
+  for (const uid of ids) {
+    const result = harvest(state, uid, now);
+    if (!result.ok) {
+      if (!harvested) return result;
+      break;
+    }
+    harvested += 1;
+    if (result.events) events.push(...result.events);
+  }
+  return {ok:true,events,harvested,remaining:readyPlotCount(state,now)};
+}
