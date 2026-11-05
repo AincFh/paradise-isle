@@ -1,6 +1,7 @@
 /** 内容表完整性校验：引用一致、数值健康、无占位数据 */
 import { describe, expect, it } from 'vitest';
 import '../src/data';
+import {emptyStats} from '../src/core/state';
 import {
   allAchievements, allAnimals, allBeasts, allBuildings, allClothing, allCrops,
   allFish, allNeighbors, allPets, allQuests, itemDef, REG,
@@ -93,12 +94,9 @@ describe('内容表完整性', () => {
   });
 
   it('成就对应的统计键存在于 Stats 初始值', () => {
-    const statKeys = new Set([
-      'harvests', 'plantings', 'waterings', 'animalsCollected', 'animalsFed', 'fishCaught',
-      'rareFishCaught', 'beastsDefeated', 'weedsCleared', 'buildingsPlaced', 'clothesBought',
-      'petsAdopted', 'petFeeds', 'petPlays', 'visits', 'helps', 'pranks', 'hires', 'coinsEarned',
-      'coinsSpent', 'itemsSold', 'expansions', 'questsDone', 'daysPlayed',
-    ]);
+    // Derive the contract from the real save factory, so adding a legitimate
+    // statistic cannot silently make this integrity guard stale.
+    const statKeys = new Set(Object.keys(emptyStats()));
     for (const a of allAchievements()) {
       expect(statKeys.has(a.stat)).toBe(true);
       // 阶梯递增
