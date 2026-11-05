@@ -36,6 +36,7 @@ export class Hud {
   private harvestBtn: HTMLButtonElement;
   private lastAvatarKey = '';
   private isVisiting = false;
+  private resizeObserver: ResizeObserver | null = null;
 
   constructor(cb: HudCallbacks) {
     this.avatarImg = spriteImg('fx:sparkle', 'hud-avatar');
@@ -94,10 +95,18 @@ export class Hud {
     document.body.append(this.root);
     // On narrow screens the top bar wraps onto two rows; keep the quest hint below it.
     if (typeof ResizeObserver !== 'undefined') {
-      new ResizeObserver(() => {
+      this.resizeObserver = new ResizeObserver(() => {
         this.root.style.setProperty('--hud-top-bottom', `${Math.round(topBar.getBoundingClientRect().bottom)}px`);
-      }).observe(topBar);
+      });
+      this.resizeObserver.observe(topBar);
     }
+  }
+
+  /** HUD belongs to one game session. Remove its DOM and observation on exit. */
+  destroy(): void {
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    this.root.remove();
   }
 
   private mkBtn(icon: string, label: string, onClick: () => void): HTMLButtonElement {
