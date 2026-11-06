@@ -5,7 +5,7 @@
 import type {ActionResult,GameState} from './types';
 import {fail} from './types';
 import {allCrops} from './registry';
-import {cropView,plant,water} from './crops';
+import {cropView,harvest,plant,water} from './crops';
 import {ENERGY_COST,WATER_COOLDOWN_MS} from './balance';
 
 export const FARM_BATCH_LIMIT=50;
@@ -80,4 +80,24 @@ export function waterBatch(state:GameState,limit:number,now:number):FarmBatchRes
  }
  if(!completed)return fail(lastFailure);
  return {ok:true,events,completed,remaining:eligible().length};
+}
+
+/** Clear withered crops through the ordinary plot transaction. No harvest
+ * loot, XP or seed refunds are invented. Partial clearing is retained when
+ * energy runs out; this leaves the rest of the land untouched.
+ */
+export function clearWitheredBatch(state:GameState,limit:number,now:number):FarmBatchResult{
+ if(!validFarmBatch(limit)||!Number.isFinite(now)||now<0)return fail('farm.invalidCount');
+ const eligible=()=>state.plots.filter(p=>p.crop&&cropView(p.crop,now).stage==='withered');
+ const ids=eligible().slice(0,limit).map(p=>p.uid);
+ if(!ids.length)return fail('farm.noWithered');
+ let completed=0,lastFailure='msg.noEnergy';
+ for(const uid of ids){
+  const result=harvest(state,uid,now);
+  if(!result.ok){lastFailure=result.reason??'msg.noEnergy';break}
+  completed++;
+ }
+ if(!completed)return fail(lastFailure);
+ return {ok:true,completed,remaining:eligible().length,
+  events:[{type:'toast',target:'farm.cleared'}]};
 }

@@ -1,5 +1,6 @@
 """Production Vite bundle / real Chromium farm-operations acceptance.
-Uses only the actual title, shop and farm controls to buy, sow, water and save.
+Uses the actual title, shop and farm controls to buy, sow, water, harvest,
+clear withered farmland and save.
 Each test uses a fresh isolated Chrome profile; no mocked game transactions.
 """
 import json
@@ -86,13 +87,57 @@ try:
   farmTab:!!document.querySelector('.tab-btn[data-tab="farm"].active')
  }""")
  assert widths['document']<=widths['viewport']+4,widths
- assert widths['stats']==6 and widths['operations']==3 and widths['farmTab'],widths
+ assert widths['stats']==6 and widths['operations']==5 and widths['farmTab'],widths
  browser.save_screenshot(str(OUT/'04-mobile-farm.png'))
+ # Seed deterministic *growth timestamps* in an isolated QA save, then perform
+ # the harvest and clearing transactions via their actual on-screen buttons.
+ # Two planted plots are past withering; the third has just matured.
+ browser.execute_script("""(() => {
+  const s=window.__PI__.state(),now=Date.now();
+  const wilt=now-(90_000+30*60_000+10_000);
+  s.plots[0].crop.plantedAt=wilt;
+  s.plots[1].crop.plantedAt=wilt;
+  s.plots[2].crop.plantedAt=now-120_000;
+ })()""")
+ browser.find_element(By.CSS_SELECTOR,'.tab-btn[data-tab="farm"]').click()
+ wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,'[data-farm-action="clear"]'))
+ pre_cleanup=browser.execute_script("""return {
+  ready:[...document.querySelectorAll('.farm-stat')][2].querySelector('strong').textContent,
+  withered:[...document.querySelectorAll('.farm-stat')][3].querySelector('strong').textContent,
+  harvestDisabled:document.querySelector('[data-farm-action="harvest"]').disabled,
+  clearDisabled:document.querySelector('[data-farm-action="clear"]').disabled
+ }""")
+ assert pre_cleanup=={'ready':'1','withered':'2',
+                       'harvestDisabled':False,'clearDisabled':False},pre_cleanup
+ before_cleanup=farm_state()
+ browser.find_element(By.CSS_SELECTOR,'[data-farm-action="clear"]').click()
+ cleaned=farm_state()
+ assert cleaned['plots']==1 and cleaned['energy']==before_cleanup['energy']-2,cleaned
+ assert cleaned['coins']==before_cleanup['coins'] and cleaned['seeds']==before_cleanup['seeds']
+ browser.save_screenshot(str(OUT/'05-withered-cleared.png'))
+ browser.find_element(By.CSS_SELECTOR,'[data-farm-action="harvest"]').click()
+ harvested=farm_state()
+ assert harvested['plots']==0 and harvested['energy']==cleaned['energy']-1,harvested
+ assert browser.execute_script("""return (window.__PI__.state().inventory.produce_carrot||0)>=2""")
+ assert browser.find_element(By.CSS_SELECTOR,'[data-farm-action="harvest"]').get_attribute('disabled') is not None
+ browser.save_screenshot(str(OUT/'06-ready-harvested.png'))
+ browser.execute_script('window.__PI__.app.save()')
+ browser.refresh()
+ wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,'.slot-card:not(.empty) .slot-main'))
+ browser.find_element(By.CSS_SELECTOR,'.slot-card:not(.empty) .slot-main').click()
+ wait.until(lambda d:d.execute_script('return !!window.__PI__'))
+ for element in browser.find_elements(By.CSS_SELECTOR,'.dialog-overlay .btn-primary'):
+  if element.is_displayed():element.click()
+ reloaded_after_cycle=farm_state()
+ assert reloaded_after_cycle['plots']==0,reloaded_after_cycle
+ assert browser.execute_script("""return (window.__PI__.state().inventory.produce_carrot||0)>=2""")
  errors=[x['message'] for x in browser.get_log('browser')
          if x['level']=='SEVERE' and 'favicon' not in x['message']]
  assert not errors,errors
  report={'result':'PASS','before':before,'buy':bought,'sow':planted,
-         'water':watered,'restored':restored,'mobile':widths,'errors':errors}
+         'water':watered,'restored':restored,'mobile':widths,
+         'preCleanup':pre_cleanup,'cleaned':cleaned,'harvested':harvested,
+         'afterCycleReload':reloaded_after_cycle,'errors':errors}
  (OUT/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
  print(json.dumps(report,ensure_ascii=False,indent=2),flush=True)
 except Exception:
