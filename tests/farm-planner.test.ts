@@ -1,8 +1,8 @@
 import {describe,it,expect} from 'vitest';
 import {makeGame,NOW} from './helpers';
-import {farmPlan,sowBatch,waterBatch,FARM_BATCH_LIMIT} from '../src/core/farm-planner';
+import {farmPlan,sowBatch,waterBatch,clearWitheredBatch,FARM_BATCH_LIMIT} from '../src/core/farm-planner';
 import {buySeed} from '../src/core/economy';
-import {cropView} from '../src/core/crops';
+import {cropView,harvestReadyPlots} from '../src/core/crops';
 import {applyEvents} from '../src/core/quests';
 import {deserialize,serialize} from '../src/save/save';
 import {ENERGY_COST,WATER_COOLDOWN_MS} from '../src/core/balance';
@@ -117,5 +117,74 @@ describe('Farm operations desk: actual farming gameplay',()=>{
   expect(clone.inventory.seed_carrot).toBe(1);
   expect(clone.player.energy).toBe(s.player.energy);
   expect(farmPlan(clone,'crop_carrot',NOW+1500)!.waterable).toBe(0);
+ });
+});
+
+describe('Closed farming loop: harvest ripe plots and reclaim withered farmland',()=>{
+ it('batch harvest pays actual produce and XP via ordinary crop transactions',()=>{
+  const s=makeGame();const food=s.player.food,energy=s.player.energy;
+  expect(sowBatch(s,'crop_carrot',3,NOW).ok).toBe(true);
+  const ripe=NOW+90_000;
+  expect(farmPlan(s,'crop_carrot',ripe)).toMatchObject({ready:3,withered:0});
+  const result=harvestReadyPlots(s,ripe,3);
+  expect(result).toMatchObject({ok:true,harvested:3,remaining:0});
+  applyEvents(s,result.events??[],ripe);
+  expect(s.stats.harvests).toBeGreaterThan(0);
+  expect(s.inventory.produce_carrot).toBeGreaterThanOrEqual(6);
+  expect(s.inventory.produce_carrot).toBeLessThanOrEqual(9);
+  expect(s.player.food).toBeGreaterThan(food);
+  expect(s.player.energy).toBeLessThanOrEqual(energy);
+  expect(s.plots.filter(p=>p.crop)).toHaveLength(0);
+  const quantity=s.inventory.produce_carrot;
+  expect(harvestReadyPlots(s,ripe,3).ok).toBe(false);
+  expect(s.inventory.produce_carrot).toBe(quantity);
+ });
+ it('clears withered plots, costs energy, and creates no fictional produce',()=>{
+  const s=makeGame();sowBatch(s,'crop_carrot',3,NOW);
+  const expiry=NOW+90_000+30*60_000+1000;
+  // Disable lazy regeneration for precise energy accounting in this test.
+  s.player.energy=5;s.player.energyUpdatedAt=expiry;
+  const inventory=JSON.stringify(s.inventory);
+  expect(farmPlan(s,'crop_carrot',expiry)).toMatchObject({ready:0,withered:3});
+  const r=clearWitheredBatch(s,2,expiry);
+  expect(r).toMatchObject({ok:true,completed:2,remaining:1});
+  expect(s.player.energy).toBe(3);
+  expect(JSON.stringify(s.inventory)).toBe(inventory);
+  expect(s.plots.filter(p=>p.crop)).toHaveLength(1);
+  expect(clearWitheredBatch(s,2,expiry)).toMatchObject({ok:true,completed:1,remaining:0});
+  expect(s.player.energy).toBe(2);
+  expect(farmPlan(s,'crop_carrot',expiry)!.empty).toBe(4);
+  expect(clearWitheredBatch(s,1,expiry)).toMatchObject({ok:false,reason:'farm.noWithered'});
+  // Ordinary planting can immediately use reclaimed plots without new schema.
+  expect(sowBatch(s,'crop_carrot',1,expiry).ok).toBe(true);
+  expect(s.plots.filter(p=>p.crop)).toHaveLength(1);
+ });
+ it('partially clears on energy shortage without modifying healthy or ready plants',()=>{
+  const s=makeGame();sowBatch(s,'crop_carrot',4,NOW);
+  const expiry=NOW+90_000+30*60_000+1000;
+  s.plots[3].crop!.plantedAt=expiry-90_000; // last plot is ripe
+  s.player.energy=2;s.player.energyUpdatedAt=expiry;
+  const before=JSON.stringify(s.inventory);
+  const result=clearWitheredBatch(s,4,expiry);
+  expect(result).toMatchObject({ok:true,completed:2,remaining:1});
+  expect(s.player.energy).toBe(0);
+  expect(JSON.stringify(s.inventory)).toBe(before);
+  expect(s.plots[2].crop).not.toBeNull();
+  expect(s.plots[3].crop).not.toBeNull();
+  const snapshot=JSON.stringify(s);
+  expect(clearWitheredBatch(s,2,expiry).ok).toBe(false);
+  expect(JSON.stringify(s)).toBe(snapshot);
+ });
+ it('malformed clear requests never mutate coins, seeds, crops or energy',()=>{
+  const s=makeGame();
+  sowBatch(s,'crop_carrot',1,NOW);
+  const expired=NOW+90_000+30*60_000+1000;
+  const before=JSON.stringify(s);
+  for(const value of [0,-1,1.5,NaN,Infinity,51]){
+   expect(clearWitheredBatch(s,value,expired).ok).toBe(false);
+   expect(JSON.stringify(s)).toBe(before);
+  }
+  expect(clearWitheredBatch(s,1,Number.NaN).ok).toBe(false);
+  expect(JSON.stringify(s)).toBe(before);
  });
 });
