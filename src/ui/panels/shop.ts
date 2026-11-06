@@ -13,6 +13,7 @@ import { h, clearChildren, spriteImg } from '../dom';
 import { openPanel, promptDialog } from '../modal';
 import { renderWorkshop } from './workshop';
 import {renderFreight} from './freight';
+import {renderFarmPlanner} from './farm-planner';
 
 export interface ShopContext {
   state: GameState;
@@ -37,6 +38,7 @@ export function openShop(ctx: ShopContext, tab?: string): void {
       { id: 'clothing', label: t('shop.clothing') },
       { id: 'pets', label: t('shop.pets') },
       { id: 'tools', label: t('shop.tools') },
+      { id: 'farm', label: t('shop.farm') },
       { id: 'workshop', label: t('shop.workshop') },
       { id: 'freight', label: t('shop.freight') },
     ],
@@ -80,7 +82,9 @@ function renderTab(body: HTMLElement, ctx: ShopContext): void {
 
   const rerender = (): void => renderTab(body, ctx);
 
-  if (activeTab === 'freight') {
+  if (activeTab === 'farm') {
+    renderFarmPlanner(body,state,ctx.now,dispatch);
+  } else if (activeTab === 'freight') {
     renderFreight(body,state,ctx.now,dispatch);
   } else if (activeTab === 'workshop') {
     renderWorkshop(body,state,ctx.now,dispatch);
