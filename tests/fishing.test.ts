@@ -37,10 +37,10 @@ describe('钓鱼', () => {
   it('收线质量差则脱钩，好则入包并进图鉴', () => {
     const state = makeGame();
     seedRng(5);
-    const miss = resolveCatch(state, 0.2);
+    const miss = resolveCatch(state, 0.2, NOW);
     expect(miss.catch?.fish).toBeNull();
 
-    const hit = resolveCatch(state, 0.9);
+    const hit = resolveCatch(state, 0.9, NOW);
     expect(hit.catch?.fish).not.toBeNull();
     const id = hit.catch!.fish!.id;
     expect(state.inventory[id]).toBe(1);
