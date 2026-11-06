@@ -43,6 +43,7 @@ jobs:
           done
           python tests/browser_workshop.py
           python tests/browser_lifecycle.py
+          python tests/browser_farm.py
           python tests/browser_freight.py
       - name: Preserve browser interaction and session-regression screenshots
         if: always()
@@ -52,6 +53,7 @@ jobs:
           path: |
             artifacts/workshop/
             artifacts/session-lifecycle/
+            artifacts/farm-operations/
             artifacts/freight/
           if-no-files-found: ignore
       - name: Upload Pages artifact
