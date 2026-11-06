@@ -87,7 +87,8 @@ describe('Farm operations desk: actual farming gameplay',()=>{
   expect(waterBatch(s,3,t+1000).ok).toBe(false);
   expect(JSON.stringify(s)).toBe(inv);
   expect(farmPlan(s,'crop_carrot',t)!.waterable).toBe(0);
-  expect(farmPlan(s,'crop_carrot',t+WATER_COOLDOWN_MS)!.waterable).toBe(3);
+  // Carrots ripen sooner than the watering cooldown, so they are no longer waterable.
+  expect(farmPlan(s,'crop_carrot',t+WATER_COOLDOWN_MS)!.waterable).toBe(0);
  });
  it('does not water mature or withered crops',()=>{
   const s=makeGame();
