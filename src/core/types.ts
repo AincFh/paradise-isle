@@ -426,6 +426,18 @@ export interface ShippingState {
   expired: number;
 }
 
+/** One real UTC-day fishing competition. Catches count only when actually landed. */
+export interface FishingCupState {
+  day: string;
+  entered: boolean;
+  catches: number;
+  points: number;
+  species: Record<string,number>;
+  claimed: Array<'bronze' | 'silver' | 'gold'>;
+  lifetimeMedals: number;
+  bestDailyPoints: number;
+}
+
 export interface GameState {
   version: number;
   createdAt: number;
@@ -445,6 +457,8 @@ export interface GameState {
   inventory: Record<string, number>;
   /** Optional in legacy saves; normalized on load and first freight action. */
   shipping?: ShippingState;
+  /** Added without changing legacy three-slot saves. */
+  fishingCup?: FishingCupState;
   quests: {
     tutorialDone: string[];
     active: QuestProgress[];

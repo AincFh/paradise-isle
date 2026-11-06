@@ -6,6 +6,7 @@ import type { GameState } from '../core/types';
 import { SAVE_VERSION, createNewGame, emptyStats } from '../core/state';
 import { initNeighbors } from '../core/social';
 import {ensureShippingState} from '../core/shipping';
+import {ensureFishingCup} from '../core/fishing-cup';
 
 export const SLOT_COUNT = 3;
 const KEY_PREFIX = 'paradise-isle:save:';
@@ -59,6 +60,7 @@ export function deserialize(json: string, now: number): GameState {
   }
   const state = migrate(raw);
   ensureShippingState(state);
+  ensureFishingCup(state);
   // 邻居为空（老档/异常）时重建
   initNeighbors(state, now);
   return state;

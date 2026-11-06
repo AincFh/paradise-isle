@@ -521,3 +521,54 @@ img { image-rendering: auto; }
  .farm-operation>img{width:38px;height:38px}
  .farm-operation button{grid-column:1/-1;width:100%;max-width:none}
 }
+
+
+/* Original Harbor Fishing Cup: a functional challenge board, not a reward ticker. */
+.cup-overview{padding:19px 20px;border:1px solid #c2d8dd;border-radius:17px;margin-bottom:14px;background:linear-gradient(125deg,#e9f6f2,#e1edfc 70%,#f8f2e1);color:#295663}
+.cup-overview h3{font-size:22px;letter-spacing:-.02em;color:#265b63;margin:5px 0 8px}
+.cup-overview p{font-size:13px;line-height:1.75;max-width:730px;color:#4b6e73;margin:0}
+.cup-kicker{font-size:10px;line-height:1.5;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:#577fa1}
+.cup-facts{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:15px}
+.cup-facts>span{padding:6px 9px;border:1px solid #c2d8db;background:#ffffffb8;border-radius:8px;font-size:11px;color:#447180}
+.cup-register{padding:28px 25px;background:#f5f9f5;border:1px solid #cbdedc;border-radius:15px;text-align:center}
+.cup-register h4{font-size:19px;color:#2d666b;margin:0 0 8px}
+.cup-register p{font-size:13px;color:#718481;max-width:500px;margin:0 auto 15px;line-height:1.7}
+.cup-register button{min-height:42px;padding-inline:30px}
+.cup-scoreboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.cup-scoreboard>div{display:flex;flex-direction:column;gap:7px;padding:15px;border:1px solid #bdd6d1;background:linear-gradient(145deg,#f3fafa,#eef7e9);border-radius:12px}
+.cup-scoreboard small{font-size:11px;font-weight:700;letter-spacing:.03em;color:#678987}
+.cup-scoreboard strong{font-size:26px;font-weight:850;color:#286773;font-variant-numeric:tabular-nums}
+.cup-medals{display:grid;gap:11px}
+.cup-medal{border:1px solid #d8d5c8;background:#f9f9f3;border-radius:13px;padding:17px 19px;min-width:0}
+.cup-medal-ready{background:linear-gradient(135deg,#f0f9f3,#f9f5df);border-color:#94bc9e;box-shadow:0 3px 15px #a8d0a525}
+.cup-medal-claimed{background:linear-gradient(135deg,#f2f5f0,#e7f3e8);border-color:#accbb8}
+.cup-medal-head{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.cup-medal-icon{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:40px;height:40px;border:2px solid #a1adbb;color:#6d788c;background:#e7eaf1;border-radius:50%;font-size:13px;font-weight:800;font-family:serif}
+.cup-medal[data-cup-medal="silver"] .cup-medal-icon{background:linear-gradient(135deg,#f7f8fa,#b2c5cf);border-color:#a3bac6;color:#536e7f}
+.cup-medal[data-cup-medal="gold"] .cup-medal-icon{background:linear-gradient(135deg,#fff2c4,#e9b961);border-color:#d9b36b;color:#856225}
+.cup-medal-head>div{flex:1;min-width:0}
+.cup-medal h4{font-size:17px;color:#405765;margin:3px 0}
+.cup-medal-status{font-size:10px;font-weight:800;letter-spacing:.06em;color:#718b87;white-space:nowrap}
+.cup-medal-ready .cup-medal-status{color:#34846b}
+.cup-medal-claimed .cup-medal-status{color:#57966c}
+.cup-goal{margin:8px 0}
+.cup-goal-label{display:flex;justify-content:space-between;gap:9px;font-size:12px;color:#637b79}
+.cup-goal-label strong{color:#445d61;font-variant-numeric:tabular-nums}
+.cup-track{width:100%;height:7px;margin-top:5px;border-radius:20px;background:#d9e5e4;overflow:hidden}
+.cup-track-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#73bca4,#3b9285);transition:width .25s ease}
+.cup-medal-footer{display:flex;align-items:center;justify-content:space-between;gap:13px;margin-top:14px;padding-top:13px;border-top:1px solid #d7e2dd}
+.cup-medal-footer>strong{font-size:12px;color:#54765a}
+.cup-medal-footer .btn:disabled{opacity:.55;cursor:not-allowed}
+.cup-notice,.cup-note{font-size:12px;line-height:1.65;white-space:normal}
+@media(max-width:650px){
+ .cup-overview{padding:14px}.cup-overview h3{font-size:19px}
+ .cup-facts{gap:5px}.cup-facts>span{font-size:10px}
+ .cup-scoreboard{gap:6px}.cup-scoreboard>div{padding:10px 8px}
+ .cup-scoreboard strong{font-size:23px}
+ .cup-medal{padding:13px 12px}.cup-medal-head{gap:8px}
+ .cup-medal-icon{width:32px;height:32px;font-size:11px}
+ .cup-medal h4{font-size:15px}.cup-medal-status{font-size:9px}
+ .cup-medal-footer{align-items:stretch;flex-direction:column}
+ .cup-medal-footer .btn{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.cup-track-fill{transition:none}}

@@ -42,7 +42,7 @@ export function startFishing(
     if (phase === 'done') return;
     phase = 'done';
     cleanup();
-    const result = resolveCatch(state, quality);
+    const result = resolveCatch(state, quality, now());
     dispatch(result);
     const c = result.catch;
     if (!c) return;

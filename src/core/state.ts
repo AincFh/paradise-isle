@@ -11,6 +11,7 @@ import { tickWeeds } from './weeds';
 import { tickPetGifts } from './pets';
 import { updateEnergy } from './player';
 import {emptyShippingState,expireFreight} from './shipping';
+import {emptyFishingCup,syncFishingCupDay} from './fishing-cup';
 
 export const SAVE_VERSION = 3;
 
@@ -80,6 +81,7 @@ export function createNewGame(name: string, seed: number, now: number): GameStat
     nextWeedAt: 0,
     inventory: { seed_carrot: 4 },
     shipping:emptyShippingState(),
+    fishingCup:emptyFishingCup(),
     quests: {
       tutorialDone: [],
       active: [],
@@ -120,6 +122,7 @@ export interface TickSummary {
 export function tickWorld(state: GameState, now: number): TickSummary {
   updateEnergy(state, now);
   expireFreight(state,now);
+  syncFishingCupDay(state,now);
   refreshDaily(state, now);
   const beastsArrived = tickBeasts(state, now);
   const cropsTrampled = tickBeastMischief(state, now);

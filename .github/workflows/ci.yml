@@ -45,6 +45,7 @@ jobs:
           python tests/browser_lifecycle.py
           python tests/browser_farm.py
           python tests/browser_freight.py
+          python tests/browser_cup.py
       - name: Preserve browser interaction and session-regression screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -55,6 +56,7 @@ jobs:
             artifacts/session-lifecycle/
             artifacts/farm-operations/
             artifacts/freight/
+            artifacts/cup/
           if-no-files-found: ignore
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main'
