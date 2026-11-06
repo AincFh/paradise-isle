@@ -12,6 +12,14 @@ It is a homage to QQ天堂岛, a 2011 Chinese web game. The rules are rebuilt fr
 
 [中文说明](README.zh-CN.md)
 
+## New: Daily Harbor Fishing Cup — competition driven by real catches
+
+The **Shop → Fishing Cup** is a new, fully bilingual fishing competition with genuine short- and long-term progression. Joining is free. Only fish successfully landed **after registering** through the existing cast → bite → reel minigame earn competition points. A failed reel, old backpack inventory, buying/selling fish and refreshing the board never count as catches.
+
+The score depends on actual rarity (common 10, uncommon 26, rare 65, epic 145, legendary 360), adds 6 points the first time a new species is caught in that day's tournament, and adds 8 for a precision reel (85%+ quality). Three independent medals require progressively higher **landed fish, score and species-diversity** thresholds: Bronze (3 / 30 / 1), Silver (6 / 105 / 2) and Gold (10 / 240 / 3). Each medal has an explicit, single-use claim for coins, XP and reputation; opening the UI itself never pays anything.
+
+The daily competition resets on a new **UTC calendar day** while preserving best daily score and lifetime medals. Backwards system clock changes do not reset progress. Existing save slots and imported backups are automatically normalized without a save-version bump; a midway tournament, completed medals and pending claims survive reload. Real Chromium UI tests cover registration, disabled unearned rewards, all three medal claims, one-time persistence and mobile layout. Deterministic Vitest tests cover the actual fishing resolver, rarity scoring, daily reset, reward idempotency, malformed saves and rollback.
+
 ## New: real harbor freight contracts
 
 **Shop → Freight Dock** adds a real logistics loop to the island's existing farming, ranching and fishing economy. The harbor generates three deterministic contracts each UTC day, drawn only from goods obtainable at your current level and fishing-rod tier. Every quote locks the daily market value, a transparent shipping premium and an 18-hour deadline once accepted. A player can accept **one order per UTC day**.
