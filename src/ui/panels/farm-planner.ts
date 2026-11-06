@@ -4,7 +4,8 @@
 import type {ActionResult,GameState} from '../../core/types';
 import {allCrops} from '../../core/registry';
 import {buySeed} from '../../core/economy';
-import {farmPlan,sowBatch,waterBatch} from '../../core/farm-planner';
+import {farmPlan,sowBatch,waterBatch,clearWitheredBatch} from '../../core/farm-planner';
+import {harvestReadyPlots} from '../../core/crops';
 import {fmtDuration,t,tl} from '../../i18n';
 import {h,clearChildren,spriteImg} from '../dom';
 
@@ -61,6 +62,8 @@ export function renderFarmPlanner(
    state.player.coins>=current.seedPrice*buyQty;
   const canPlant=Math.min(quote.plantable,quantity)>0;
   const waterable=Math.min(quote.waterCapacity,quantity)>0;
+  const harvestable=Math.min(quote.ready,quote.energy,quantity)>0;
+  const clearable=Math.min(quote.withered,quote.energy,quantity)>0;
   const row=h('div',{class:'farm-workflow'},
    h('article',{class:'farm-operation','data-farm-op':'buy'},
     spriteImg('icon:'+current.seedId,'icon-lg'),
@@ -88,6 +91,23 @@ export function renderFarmPlanner(
      'water',!waterable,()=>{
       const result=waterBatch(state,quantity,now());dispatch(result);
       if(result.ok)dispatch({ok:true,events:[{type:'toast',target:'farm.watered'}]});
+     })),
+   h('article',{class:'farm-operation','data-farm-op':'harvest'},
+    spriteImg('icon:produce_carrot','icon-lg'),
+    h('div',{},h('strong',{},t('farm.harvestReady',{n:quote.ready})),
+     h('p',{},t('farm.harvestHint'))),
+    button(t('farm.harvest',{n:Math.min(quantity,quote.ready,quote.energy)}),
+     'harvest',!harvestable,()=>{
+      const result=harvestReadyPlots(state,now(),quantity);dispatch(result);
+      if(result.ok)dispatch({ok:true,events:[{type:'toast',target:'farm.harvested'}]});
+     })),
+   h('article',{class:'farm-operation','data-farm-op':'clear'},
+    spriteImg('icon:seed_carrot','icon-lg'),
+    h('div',{},h('strong',{},t('farm.clearReady',{n:quote.withered})),
+     h('p',{},t('farm.clearHint'))),
+    button(t('farm.clear',{n:Math.min(quantity,quote.withered,quote.energy)}),
+     'clear',!clearable,()=>{
+      const result=clearWitheredBatch(state,quantity,now());dispatch(result);
      }))
   );
   body.append(row);
