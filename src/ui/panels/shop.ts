@@ -13,6 +13,7 @@ import { h, clearChildren, spriteImg } from '../dom';
 import { openPanel, promptDialog } from '../modal';
 import { renderWorkshop } from './workshop';
 import {renderFreight} from './freight';
+import {renderFishingCup} from './fishing-cup';
 import {renderFarmPlanner} from './farm-planner';
 
 export interface ShopContext {
@@ -41,6 +42,7 @@ export function openShop(ctx: ShopContext, tab?: string): void {
       { id: 'farm', label: t('shop.farm') },
       { id: 'workshop', label: t('shop.workshop') },
       { id: 'freight', label: t('shop.freight') },
+      { id: 'cup', label: t('shop.cup') },
     ],
     activeTab,
     onTab: (id) => openShop(ctx, id),
@@ -86,6 +88,8 @@ function renderTab(body: HTMLElement, ctx: ShopContext): void {
     renderFarmPlanner(body,state,ctx.now,dispatch);
   } else if (activeTab === 'freight') {
     renderFreight(body,state,ctx.now,dispatch);
+  } else if (activeTab === 'cup') {
+    renderFishingCup(body,state,ctx.now,dispatch);
   } else if (activeTab === 'workshop') {
     renderWorkshop(body,state,ctx.now,dispatch);
   } else if (activeTab === 'seeds' || activeTab === 'trees') {
