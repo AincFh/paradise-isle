@@ -10,9 +10,11 @@ import { fail } from './types';
 
 /** 买种子（按作物 def） */
 export function buySeed(state: GameState, cropId: string, count: number): ActionResult {
+  if (!Number.isSafeInteger(count) || count < 1 || count > 50) return fail('farm.invalidCount');
   const def = cropDef(cropId);
   if (state.player.level < def.unlockLevel) return fail('msg.locked');
   const cost = def.seedPrice * count;
+  if (!Number.isSafeInteger(cost)) return fail('farm.invalidCount');
   if (!spendCoins(state, cost)) return fail('msg.noCoins');
   addItem(state, def.seedId, count);
   return { ok: true };
