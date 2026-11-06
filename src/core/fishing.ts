@@ -8,6 +8,7 @@ import { ENERGY_COST } from './balance';
 import { addItem, gainXp, petHasSkill, spendEnergy } from './player';
 import { roll, rollWeighted } from './rng';
 import { fail } from './types';
+import {recordFishingCupCatch} from './fishing-cup';
 
 /** 稀有度基础权重（乘以鱼竿修正） */
 const RARITY_WEIGHT: Record<FishRarity, number> = {
@@ -51,7 +52,7 @@ export interface CatchResult {
  * 收线结算。quality ∈ [0,1]：收线小游戏保持在区间内的时间占比。
  * <0.45 鱼跑掉；否则按概率表出鱼，quality 高时再往上顶一档稀有度。
  */
-export function resolveCatch(state: GameState, quality: number): ActionResult & { catch?: CatchResult } {
+export function resolveCatch(state: GameState, quality: number, now: number): ActionResult & { catch?: CatchResult } {
   if (quality < 0.45) {
     return { ok: true, catch: { fish: null, isNew: false, amountXp: 0 } };
   }
@@ -67,6 +68,7 @@ export function resolveCatch(state: GameState, quality: number): ActionResult & 
   state.collections.fish[caught.id] = prev + 1;
   addItem(state, caught.id, 1);
   const levelEvents = gainXp(state, caught.xp);
+  recordFishingCupCatch(state,caught,quality,now);
   return {
     ok: true,
     catch: { fish: caught, isNew: prev === 0, amountXp: caught.xp },
